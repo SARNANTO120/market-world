@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>كريمسون | سوق البيع والشراء الفاخر</title>
+<meta name="description" content="سوق فاخر للبيع والشراء بدفع آمن عبر PayPal.">
+<meta name="theme-color" content="#070708">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="loader"><div class="loader-mark">C</div><div class="loader-bar"><i></i></div></div>
+
+<canvas id="embers" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div id="character" aria-hidden="true"><div class="aura"></div><img alt=""></div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="كريمسون"><span class="brand-mark">C</span><span>كريمسون</span></a>
+  <nav class="links" id="links">
+    <a href="#market">السوق</a>
+    <a href="#how">كيف يعمل</a>
+    <a href="#sell">بيع الآن</a>
+    <a href="#account" id="navAccount" hidden>حسابي</a>
+    <a href="#admin" id="navAdmin" hidden>الإدارة</a>
+  </nav>
+  <div class="nav-actions">
+    <span id="hello" class="hello" hidden></span>
+    <button class="btn ghost" id="btnLogin">تسجيل الدخول</button>
+    <button class="btn" id="btnLogout" hidden>تسجيل الخروج</button>
+    <button class="burger" id="burger" aria-label="القائمة"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <p class="eyebrow reveal">سوق النخبة · دفع آمن عبر PayPal</p>
+    <h1 class="reveal" style="--d:.1s"><span class="line">اشترِ وبِع</span><span class="line red shimmer">بأناقة قاتلة</span></h1>
+    <p class="lead reveal" style="--d:.25s">منصة فاخرة تجمع البائعين والمشترين في مكان واحد. حماية متقدمة لحسابك، ومدفوعات موثوقة، وتجربة لا تشبه غيرها.</p>
+    <div class="cta reveal" style="--d:.4s">
+      <a class="btn big" href="#market">تصفّح السوق</a>
+      <a class="btn big ghost" href="#sell">ابدأ البيع</a>
+    </div>
+    <div class="stats reveal" style="--d:.55s">
+      <div><b data-count="12800">0</b><span>عملية ناجحة</span></div>
+      <div><b data-count="4200">0</b><span>بائع موثّق</span></div>
+      <div><b data-count="99">0</b><span>% رضا العملاء</span></div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><i></i></div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div class="track">
+    <span>◆ دفع آمن</span><span>◆ تشفير كامل</span><span>◆ بائعون موثّقون</span><span>◆ شحن سريع</span><span>◆ حماية المشتري</span><span>◆ دعم دائم</span>
+    <span>◆ دفع آمن</span><span>◆ تشفير كامل</span><span>◆ بائعون موثّقون</span><span>◆ شحن سريع</span><span>◆ حماية المشتري</span><span>◆ دعم دائم</span>
+  </div></div>
+
+  <section class="section" id="market">
+    <div class="sec-head reveal"><h2>السوق</h2><p>أحدث المعروضات من بائعين حقيقيين</p></div>
+    <div class="tools reveal">
+      <input id="search" type="search" placeholder="ابحث عن منتج..." autocomplete="off" maxlength="60">
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty" hidden>لا توجد نتائج مطابقة.</p>
+  </section>
+
+  <section class="section alt" id="how">
+    <div class="sec-head reveal"><h2>كيف يعمل</h2><p>ثلاث خطوات فقط</p></div>
+    <div class="steps">
+      <article class="step reveal"><span class="num">01</span><h3>أنشئ حسابك</h3><p>تسجيل سريع بكلمة مرور مشفّرة وحماية ضد الاختراق.</p></article>
+      <article class="step reveal" style="--d:.15s"><span class="num">02</span><h3>اعرض أو اشترِ</h3><p>أضف منتجك بسعرك أو اختر ما يعجبك من السوق.</p></article>
+      <article class="step reveal" style="--d:.3s"><span class="num">03</span><h3>ادفع عبر PayPal</h3><p>تتم المعاملة بأمان ويصل المال مباشرة إلى حساب البائع.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="sell">
+    <div class="sec-head reveal"><h2>بيع الآن</h2><p>أضف منتجك في أقل من دقيقة</p></div>
+    <div class="panel reveal" id="sellPanel"></div>
+  </section>
+
+  <section class="section alt" id="account" hidden>
+    <div class="sec-head reveal"><h2>حسابي</h2><p id="accSub"></p></div>
+    <div class="acc-grid">
+      <div class="panel reveal">
+        <h3>حساب PayPal لاستلام الأرباح</h3>
+        <form id="ppForm" class="form"><label>بريد PayPal<input name="paypalEmail" type="email" required maxlength="120" placeholder="seller@example.com"></label><button class="btn">حفظ</button></form>
+      </div>
+      <div class="panel reveal"><h3>إعلاناتي</h3><div id="myListings" class="list"></div></div>
+      <div class="panel reveal"><h3>مشترياتي</h3><div id="myPurchases" class="list"></div></div>
+      <div class="panel reveal"><h3>التواصل مع الإدارة <span class="badge" id="unreadBadge" hidden></span></h3>
+        <div class="chat" id="myChat"></div>
+        <form class="chat-form" id="myChatForm"><input name="body" maxlength="1000" placeholder="اكتب رسالتك للإدارة..." autocomplete="off" required><button class="btn">إرسال</button></form>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="admin" hidden>
+    <div class="sec-head reveal"><h2>لوحة الإدارة</h2><p>إدارة المبيعات والمستخدمين والرسائل</p></div>
+    <div class="panel admin reveal">
+      <div class="tabs"><button class="tab on" data-atab="add">إضافة منتج موثّق</button><button class="tab" data-atab="users">المستخدمون</button><button class="tab" data-atab="chat">الرسائل <span class="badge" id="adminUnread" hidden></span></button></div>
+      <div id="atab-add">
+        <p class="hint">أرفق صوراً حقيقية للمنتج (حتى 4) — تظهر للمشتري مع شارة «موثّق من الإدارة» لزيادة الثقة والمصداقية.</p>
+        <form class="form" id="adminForm">
+          <label>عنوان المنتج<input name="title" required minlength="3" maxlength="80"></label>
+          <label>الوصف<textarea name="description" required minlength="10" maxlength="1000"></textarea></label>
+          <div class="row2"><label>السعر (دولار)<input name="price" type="number" required min="1" max="100000" step="0.01"></label>
+          <label>التصنيف<select name="category" id="adminCat"></select></label></div>
+          <label>صور المنتج الحقيقية<input name="files" id="adminFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple required></label>
+          <div class="previews" id="previews"></div>
+          <button class="btn big">انشر كمنتج موثّق</button>
+        </form>
+        <h3 style="margin-top:28px">كل المعروضات</h3><div class="list" id="adminItems"></div>
+      </div>
+      <div id="atab-users" hidden><div class="list" id="userList"></div></div>
+      <div id="atab-chat" hidden>
+        <div class="chat-layout"><div class="threads" id="threads"></div>
+          <div><div class="chat-title" id="chatTitle">اختر محادثة</div><div class="chat" id="adminChat"></div>
+            <form class="chat-form" id="adminChatForm" hidden><input name="body" maxlength="1000" placeholder="اكتب ردّك..." autocomplete="off" required><button class="btn">إرسال</button></form></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer"><div class="brand"><span class="brand-mark">C</span><span>كريمسون</span></div><p>© <span id="yr"></span> كريمسون. جميع الحقوق محفوظة.</p></footer>
+
+<!-- نافذة الدخول -->
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle" hidden>
+  <div class="modal-box">
+    <button class="x" data-close aria-label="إغلاق">×</button>
+    <div class="tabs"><button class="tab on" data-tab="login">دخول</button><button class="tab" data-tab="register">حساب جديد</button></div>
+    <h3 id="authTitle">مرحباً بعودتك</h3>
+    <form id="authForm" class="form" autocomplete="on" novalidate>
+      <label data-only="register">اسم المستخدم<input name="username" autocomplete="username" maxlength="20" placeholder="crimson_user"></label>
+      <label>البريد الإلكتروني<input name="email" type="email" autocomplete="email" maxlength="120" required placeholder="you@example.com"></label>
+      <label>كلمة المرور<input name="password" type="password" autocomplete="current-password" maxlength="128" required placeholder="••••••••••"></label>
+      <small class="hint" data-only="register">10 أحرف على الأقل مع حرف ورقم.</small>
+      <p class="err" id="authErr" role="alert"></p>
+      <button class="btn big full" id="authSubmit">دخول</button>
+    </form>
+  </div>
+</div>
+
+<!-- نافذة المنتج والدفع -->
+<div class="modal" id="itemModal" role="dialog" aria-modal="true" hidden>
+  <div class="modal-box wide">
+    <button class="x" data-close aria-label="إغلاق">×</button>
+    <div class="item-view" id="itemView"></div>
+  </div>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+<script src="js/fx.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
