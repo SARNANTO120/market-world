@@ -1,0 +1,8 @@
+{
+  "name": "crimson-market",
+  "version": "1.0.0",
+  "private": true,
+  "description": "سوق Crimson - موقع بيع وشراء فخم بدون أي اعتمادات خارجية",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=22.13" }
+}
