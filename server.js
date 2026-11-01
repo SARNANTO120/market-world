@@ -24,6 +24,7 @@ const PP_ENV = process.env.PAYPAL_ENV === 'live' ? 'live' : 'sandbox';
 const PP_BASE = PP_ENV === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
 const PP_ID = process.env.PAYPAL_CLIENT_ID || '';
 const PP_SECRET = process.env.PAYPAL_CLIENT_SECRET || '';
+const PP_RECEIVER = (process.env.PAYPAL_RECEIVER_EMAIL || 'elhabar2025ahmed@gmail.com').trim().toLowerCase(); // حساب PayPal المستلم للمبيعات
 const PP_READY = Boolean(PP_ID && PP_SECRET);
 const SESSION_TTL = 1000 * 60 * 60 * 8; // 8 ساعات
 const PUBLIC = path.join(__dirname, 'public');
@@ -256,14 +257,6 @@ route('POST', '/api/logout', async ({ res, s }) => {
   return { ok: true, csrf };
 });
 
-route('POST', '/api/profile', async ({ body, user }) => {
-  if (!user) return [401, 'سجّل الدخول أولاً'];
-  const pe = clean(body.paypalEmail, 120).toLowerCase();
-  if (!reEmail.test(pe)) return [400, 'بريد PayPal غير صالح'];
-  q('UPDATE users SET paypal_email=? WHERE id=?').run(pe, user.id);
-  return { ok: true };
-});
-
 route('GET', '/api/items', async ({ url }) => {
   const term = clean(url.searchParams.get('q'), 60), cat = clean(url.searchParams.get('cat'), 20);
   const like = '%' + term.replace(/[%_]/g, '') + '%';
@@ -273,21 +266,7 @@ route('GET', '/api/items', async ({ url }) => {
   return { items: rows.map(publicItem) };
 });
 
-route('POST', '/api/items', async ({ body, user }) => {
-  if (!user) return [401, 'سجّل الدخول أولاً'];
-  if (limited('sell:' + user.id, 20, 3600000)) return [429, 'تجاوزت الحد المسموح من الإعلانات'];
-  const title = clean(body.title, 80), desc = clean(body.description, 1000), cat = clean(body.category, 20);
-  const price = Math.round(Number(body.price) * 100), image = safeImage(clean(body.image, 500));
-  if (title.length < 3) return [400, 'العنوان قصير جداً'];
-  if (desc.length < 10) return [400, 'الوصف قصير جداً'];
-  if (!CATS.includes(cat)) return [400, 'تصنيف غير صالح'];
-  if (!Number.isInteger(price) || price < 100 || price > 10000000) return [400, 'السعر يجب أن يكون بين 1 و 100000 دولار'];
-  if (image === undefined) return [400, 'رابط الصورة يجب أن يكون https صالحاً'];
-  if (!q('SELECT paypal_email FROM users WHERE id=?').get(user.id).paypal_email) return [400, 'أضف بريد PayPal الخاص بك أولاً لاستلام الأرباح'];
-  const r = q('INSERT INTO items(seller_id,title,description,price_cents,category,image,created_at) VALUES(?,?,?,?,?,?,?)')
-    .run(user.id, title, desc, price, cat, image, Date.now());
-  return { id: Number(r.lastInsertRowid) };
-});
+route('POST', '/api/items', async () => [403, 'البيع متاح للإدارة فقط']);
 
 route('GET', '/api/mine', async ({ user }) => {
   if (!user) return [401, 'سجّل الدخول أولاً'];
@@ -305,12 +284,12 @@ route('POST', '/api/items/delete', async ({ body, user }) => {
 route('POST', '/api/paypal/create-order', async ({ body, user }) => {
   if (!user) return [401, 'سجّل الدخول أولاً للشراء'];
   if (!PP_READY) return [503, 'PayPal غير مُفعّل: أضف PAYPAL_CLIENT_ID و PAYPAL_CLIENT_SECRET'];
-  const item = q(`SELECT i.*, u.paypal_email AS payee FROM items i JOIN users u ON u.id=i.seller_id WHERE i.id=? AND i.status='active'`).get(Number(body.itemId));
+  const item = q(`SELECT * FROM items WHERE id=? AND status='active'`).get(Number(body.itemId));
   if (!item) return [404, 'المنتج غير متاح'];
   if (item.seller_id === user.id) return [400, 'لا يمكنك شراء منتجك'];
   const unit = { reference_id: String(item.id), description: item.title.slice(0, 120),
     amount: { currency_code: 'USD', value: (item.price_cents / 100).toFixed(2) } }; // السعر دائماً من قاعدة البيانات
-  if (item.payee) unit.payee = { email_address: item.payee };
+  unit.payee = { email_address: PP_RECEIVER }; // كل المبيعات تذهب إلى حساب الإدارة
   const order = await ppApi('POST', '/v2/checkout/orders', { intent: 'CAPTURE', purchase_units: [unit] });
   q('INSERT INTO orders(paypal_order_id,item_id,buyer_id,amount_cents,status,created_at) VALUES(?,?,?,?,?,?)')
     .run(order.id, item.id, user.id, item.price_cents, 'CREATED', Date.now());
@@ -366,7 +345,6 @@ route('POST', '/api/admin/items', adminOnly(async ({ body, user }) => {
   if (!CATS.includes(cat)) return [400, 'تصنيف غير صالح'];
   if (!Number.isInteger(price) || price < 100 || price > 10000000) return [400, 'سعر غير صالح'];
   if (!images.length) return [400, 'أرفق صورة حقيقية واحدة على الأقل للمنتج'];
-  if (!q('SELECT paypal_email FROM users WHERE id=?').get(user.id).paypal_email) return [400, 'أضف بريد PayPal الخاص بالإدارة أولاً (قسم حسابي)'];
   const r = q('INSERT INTO items(seller_id,title,description,price_cents,category,image,images,verified,created_at) VALUES(?,?,?,?,?,?,?,1,?)')
     .run(user.id, title, desc, price, cat, images[0], JSON.stringify(images), Date.now());
   return { id: Number(r.lastInsertRowid) };
@@ -495,4 +473,4 @@ http.createServer(async (req, res) => {
     console.error(e.message);
     if (!res.headersSent) fail(res, 500, e.message.startsWith('paypal') ? 'خطأ في الاتصال مع PayPal' : 'خطأ في الخادم');
   }
-}).listen(PORT, () => console.log(`Crimson Market → http://localhost:${PORT}  (PayPal: ${PP_READY ? PP_ENV : 'غير مُفعّل'})`));
+}).listen(PORT, () => console.log(`Crimson Market → http://localhost:${PORT}  (PayPal: ${PP_READY ? PP_ENV : 'غير مُفعّل'} → ${PP_RECEIVER})`));

@@ -44,8 +44,7 @@ function applyAuth() {
   $('#admin').hidden = !adm; $('#navAdmin').hidden = !adm;
   if (adm) initAdmin();
   if (u) startChat(); else stopChat();
-  if (u) { clear($('#hello')).append('أهلاً، ', h('b', {}, u.username)); $('#accSub').textContent = u.email; $('#ppForm').paypalEmail.value = u.paypal_email || ''; loadMine(); }
-  renderSell();
+  if (u) { clear($('#hello')).append('أهلاً، ', h('b', {}, u.username)); $('#accSub').textContent = u.email; loadMine(); }
 }
 function setAuthMode(mode) {
   const reg = mode === 'register';
@@ -96,7 +95,7 @@ function thumb(it) {
 function card(it, i) {
   return h('article', { class: 'card', style: `--i:${Math.min(i, 12) * 0.06}s`, tabindex: 0, onclick: () => openItem(it), onkeydown: (e) => e.key === 'Enter' && openItem(it) },
     thumb(it), h('div', { class: 'card-body' }, h('h3', {}, it.title), h('p', {}, it.description),
-      h('div', { class: 'card-foot' }, h('span', { class: 'price' }, money(it.price)), h('span', { class: 'by' }, 'بواسطة ' + it.seller))));
+      h('div', { class: 'card-foot' }, h('span', { class: 'price' }, money(it.price)), h('span', { class: 'by' }, 'متجر كريمسون'))));
 }
 function renderChips() {
   const box = clear($('#chips'));
@@ -123,7 +122,7 @@ function openItem(it) {
   const box = h('div', { id: 'ppBox' });
   const view = clear($('#itemView'));
   view.append(thumb(it), h('div', {}, h('h3', {}, it.title), h('span', { class: 'price' }, money(it.price)),
-    h('p', { class: 'desc' }, it.description), h('p', { class: 'by' }, 'البائع: ' + it.seller), box,
+    h('p', { class: 'desc' }, it.description), h('p', { class: 'by' }, 'البائع: متجر كريمسون (موثّق)'), box,
     it.images && it.images.length > 1 ? h('div', { class: 'gallery' }, it.images.map((u, i) => h('img', { src: u, alt: '', class: i ? '' : 'on', onclick: (e) => {
       const main = view.querySelector('.thumb img'); if (main) main.src = u;
       e.target.parentNode.querySelectorAll('img').forEach((x) => x.classList.toggle('on', x === e.target)); } }))) : null,
@@ -140,26 +139,6 @@ function openItem(it) {
   }).render(box)).catch((e) => toast(e.message));
 }
 
-// ---------- البيع ----------
-function renderSell() {
-  const p = clear($('#sellPanel'));
-  if (!state.user) { p.append(h('div', { class: 'lockbox' }, h('p', {}, '🔒 سجّل الدخول لتتمكن من عرض منتجاتك للبيع.'), h('button', { class: 'btn big', onclick: () => showAuth('register') }, 'أنشئ حساباً الآن'))); return; }
-  const f = h('form', { class: 'form' },
-    h('label', {}, 'عنوان المنتج', h('input', { name: 'title', required: true, maxlength: 80, minlength: 3 })),
-    h('label', {}, 'الوصف', h('textarea', { name: 'description', required: true, maxlength: 1000, minlength: 10 })),
-    h('div', { class: 'row2' },
-      h('label', {}, 'السعر (دولار)', h('input', { name: 'price', type: 'number', required: true, min: 1, max: 100000, step: '0.01' })),
-      h('label', {}, 'التصنيف', h('select', { name: 'category' }, state.cats.map((c) => h('option', { value: c }, c))))),
-    h('label', {}, 'رابط صورة (https، اختياري)', h('input', { name: 'image', type: 'url', maxlength: 500, placeholder: 'https://...' })),
-    h('button', { class: 'btn big' }, 'انشر المنتج'));
-  f.addEventListener('submit', async (e) => {
-    e.preventDefault(); const b = f.querySelector('button'); b.disabled = true;
-    try { await api('items', Object.fromEntries(new FormData(f))); f.reset(); toast('تم نشر منتجك!', true); loadItems(); loadMine(); }
-    catch (err) { toast(err.message); }
-    b.disabled = false;
-  });
-  p.append(f);
-}
 // ---------- المحادثات ----------
 const fmtTime = (t) => new Date(t).toLocaleString('ar', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' });
 function renderMsgs(box, msgs, meIsAdmin) {
@@ -274,20 +253,10 @@ async function openThread(id, name, quiet) {
   } catch (e) { if (!quiet) toast(e.message); }
 }
 
-$('#ppForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  try { await api('profile', { paypalEmail: e.target.paypalEmail.value }); state.user.paypal_email = e.target.paypalEmail.value; toast('تم حفظ بريد PayPal', true); }
-  catch (err) { toast(err.message); }
-});
 async function loadMine() {
   try {
     const d = await api('mine');
-    const L = clear($('#myListings')), P = clear($('#myPurchases'));
-    if (!d.listings.length) L.append(h('p', { class: 'by' }, 'لا توجد إعلانات بعد.'));
-    d.listings.filter((i) => i.status !== 'removed').forEach((i) => L.append(h('div', { class: 'li' },
-      h('span', {}, i.title, ' — ', money(i.price)),
-      i.status === 'sold' ? h('span', { class: 'badge sold' }, 'تم البيع') :
-        h('button', { class: 'btn ghost', onclick: async () => { try { await api('items/delete', { id: i.id }); loadMine(); loadItems(); } catch (e) { toast(e.message); } } }, 'حذف'))));
+    const P = clear($('#myPurchases'));
     if (!d.purchases.length) P.append(h('p', { class: 'by' }, 'لا توجد مشتريات بعد.'));
     d.purchases.forEach((x) => P.append(h('div', { class: 'li' }, h('span', {}, x.title), h('b', {}, money(x.amount)))));
   } catch {}

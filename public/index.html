@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>كريمسون | سوق البيع والشراء الفاخر</title>
-<meta name="description" content="سوق فاخر للبيع والشراء بدفع آمن عبر PayPal.">
+<title>كريمسون | المتجر الفاخر</title>
+<meta name="description" content="متجر فاخر بمنتجات موثّقة ودفع آمن عبر PayPal.">
 <meta name="theme-color" content="#070708">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,6 @@
   <nav class="links" id="links">
     <a href="#market">السوق</a>
     <a href="#how">كيف يعمل</a>
-    <a href="#sell">بيع الآن</a>
     <a href="#account" id="navAccount" hidden>حسابي</a>
     <a href="#admin" id="navAdmin" hidden>الإدارة</a>
   </nav>
@@ -40,15 +39,15 @@
   <section class="hero">
     <div class="hero-glow"></div>
     <p class="eyebrow reveal">سوق النخبة · دفع آمن عبر PayPal</p>
-    <h1 class="reveal" style="--d:.1s"><span class="line">اشترِ وبِع</span><span class="line red shimmer">بأناقة قاتلة</span></h1>
-    <p class="lead reveal" style="--d:.25s">منصة فاخرة تجمع البائعين والمشترين في مكان واحد. حماية متقدمة لحسابك، ومدفوعات موثوقة، وتجربة لا تشبه غيرها.</p>
+    <h1 class="reveal" style="--d:.1s"><span class="line">تسوّق</span><span class="line red shimmer">بأناقة قاتلة</span></h1>
+    <p class="lead reveal" style="--d:.25s">متجر فاخر بمنتجات موثّقة بصور حقيقية. حماية متقدمة لحسابك، ومدفوعات موثوقة، وتجربة لا تشبه غيرها.</p>
     <div class="cta reveal" style="--d:.4s">
       <a class="btn big" href="#market">تصفّح السوق</a>
-      <a class="btn big ghost" href="#sell">ابدأ البيع</a>
+      <a class="btn big ghost" href="#how">كيف يعمل</a>
     </div>
     <div class="stats reveal" style="--d:.55s">
       <div><b data-count="12800">0</b><span>عملية ناجحة</span></div>
-      <div><b data-count="4200">0</b><span>بائع موثّق</span></div>
+      <div><b data-count="4200">0</b><span>منتج موثّق</span></div>
       <div><b data-count="99">0</b><span>% رضا العملاء</span></div>
     </div>
     <div class="scroll-hint" aria-hidden="true"><i></i></div>
@@ -60,7 +59,7 @@
   </div></div>
 
   <section class="section" id="market">
-    <div class="sec-head reveal"><h2>السوق</h2><p>أحدث المعروضات من بائعين حقيقيين</p></div>
+    <div class="sec-head reveal"><h2>السوق</h2><p>أحدث المنتجات الموثّقة من الإدارة</p></div>
     <div class="tools reveal">
       <input id="search" type="search" placeholder="ابحث عن منتج..." autocomplete="off" maxlength="60">
       <div class="chips" id="chips"></div>
@@ -73,24 +72,14 @@
     <div class="sec-head reveal"><h2>كيف يعمل</h2><p>ثلاث خطوات فقط</p></div>
     <div class="steps">
       <article class="step reveal"><span class="num">01</span><h3>أنشئ حسابك</h3><p>تسجيل سريع بكلمة مرور مشفّرة وحماية ضد الاختراق.</p></article>
-      <article class="step reveal" style="--d:.15s"><span class="num">02</span><h3>اعرض أو اشترِ</h3><p>أضف منتجك بسعرك أو اختر ما يعجبك من السوق.</p></article>
-      <article class="step reveal" style="--d:.3s"><span class="num">03</span><h3>ادفع عبر PayPal</h3><p>تتم المعاملة بأمان ويصل المال مباشرة إلى حساب البائع.</p></article>
+      <article class="step reveal" style="--d:.15s"><span class="num">02</span><h3>اختر منتجك</h3><p>تصفّح المنتجات الموثّقة بصور حقيقية من الإدارة واختر ما يعجبك.</p></article>
+      <article class="step reveal" style="--d:.3s"><span class="num">03</span><h3>ادفع عبر PayPal</h3><p>تتم المعاملة بأمان عبر PayPal ويصلك تأكيد الطلب فوراً.</p></article>
     </div>
-  </section>
-
-  <section class="section" id="sell">
-    <div class="sec-head reveal"><h2>بيع الآن</h2><p>أضف منتجك في أقل من دقيقة</p></div>
-    <div class="panel reveal" id="sellPanel"></div>
   </section>
 
   <section class="section alt" id="account" hidden>
     <div class="sec-head reveal"><h2>حسابي</h2><p id="accSub"></p></div>
     <div class="acc-grid">
-      <div class="panel reveal">
-        <h3>حساب PayPal لاستلام الأرباح</h3>
-        <form id="ppForm" class="form"><label>بريد PayPal<input name="paypalEmail" type="email" required maxlength="120" placeholder="seller@example.com"></label><button class="btn">حفظ</button></form>
-      </div>
-      <div class="panel reveal"><h3>إعلاناتي</h3><div id="myListings" class="list"></div></div>
       <div class="panel reveal"><h3>مشترياتي</h3><div id="myPurchases" class="list"></div></div>
       <div class="panel reveal"><h3>التواصل مع الإدارة <span class="badge" id="unreadBadge" hidden></span></h3>
         <div class="chat" id="myChat"></div>
